@@ -32,8 +32,8 @@ def send_Slack_menu_reminder(menu_url):
     that are members of the Slack channel.
     """
     logger.info("Sent slack reminder")
-    text = "Hello! \n I share with you today's menu :)"
-    f"\n {menu_url} \n Have a nice day!"
+    text = "Hello! \n I share with you today's menu :)" + \
+        f"\n {menu_url} \n Have a nice day!"
     send_slack_message(
         text=text, channel=settings.SLACK_CHANNEL, auth=settings.SLACK_TOKEN
     )
