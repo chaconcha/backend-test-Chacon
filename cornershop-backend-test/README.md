@@ -21,12 +21,14 @@
 
 * Local: http://127.0.0.1:8000
 
-### URLs
+### Frontend URLs
 
 - http://hostname/menu/ : List of all existing menus
 - http://hostname/menu/xxxxxxx-xxxxxx-xxxxx/ : Menu form to send responses
 - http://hostname/menu/xxxxxxx-xxxxxx-xxxxx/detail/ : Menu detail with list of responses
 - http://hostname/login/ : Login page
+
+These pages are served by django as HTML files containing Vue code and are meant to mimic a frontend server
 
 ### API Endpoints
 
