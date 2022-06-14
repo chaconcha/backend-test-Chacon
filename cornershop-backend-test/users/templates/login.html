@@ -29,7 +29,7 @@
       <label for="date">Password</label>
       <input id="date" v-model="userData.password"  />
       <button @click="submit">Login</button>
-      [[ message ]]
+      <p :style="'color: ' + messageColor">[[ message ]]</p>
     </div>
 
     <script>
@@ -38,6 +38,7 @@
         el: "#app_menu",
         data: {
           message: "",
+          messageColor: "green",
           userData: {},
         },
         methods: {
@@ -48,7 +49,10 @@
               .then(response => {
                 localStorage.setItem('token', response.data.token)
                 window.location.href = 'http://' + window.location.host + '/menu/'})
-              .catch(error => this.message=error.payload)
+              .catch(error => {
+                this.messageColor="red"
+                this.message=error.response.statusText
+              })
           },
         }
       })
