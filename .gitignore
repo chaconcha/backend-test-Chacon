@@ -59,3 +59,6 @@ target/
 
 # mac stuff
 .DS_Store
+
+# jupyter stuff
+.ipynb_checkpoints
