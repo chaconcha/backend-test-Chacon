@@ -5,9 +5,7 @@
 * `make up`
 * `dev up`
 
-##### Creating superuser for login
-
-Necessary for creating and administrationg menus.
+##### Creating superuser for login (Necessary for creating and administrating menus)
 
 * `dev createuser`
 
@@ -25,20 +23,34 @@ Necessary for creating and administrationg menus.
 
 ### URLs
 
-- http>//hostname/menu/ : List of all existing menus
-- http>//hostname/menu/xxxxxxx-xxxxxx-xxxxx/ : Menu form for sending a response
-- http>//hostname/menu/xxxxxxx-xxxxxx-xxxxx/detail/ : Menu detail, with list of responses
+- http://hostname/menu/ : List of all existing menus
+- http://hostname/menu/xxxxxxx-xxxxxx-xxxxx/ : Menu form to send responses
+- http://hostname/menu/xxxxxxx-xxxxxx-xxxxx/detail/ : Menu detail with list of responses
+- http://hostname/login/ : Login page
+
+### API Endpoints
+
+- [GET] http://hostname/menu-api/ : Lists menus
+- [POST] http://hostname/menu-api/ : Creates new menu
+- [GET] http://hostname/menu-api/xxxxxxx-xxxxxx-xxxxx/ : Retrieves menu info and responses
+- [PUT] http://hostname/menu-api/xxxxxxx-xxxxxx-xxxxx/ : Updates menu info
+- [DELETE] http://hostname/menu-api/xxxxxxx-xxxxxx-xxxxx/ : Deletes menu
+- [GET] http://hostname/menu-api/xxxxxxx-xxxxxx-xxxxx/form/ : Retrieves menu with available options
+- [POST] http://hostname/menu-api/xxxxxxx-xxxxxx-xxxxx/respond/ : Saves employee's menu choice
+- [POST] http://hostname/menu-api/xxxxxxx-xxxxxx-xxxxx/reminder/ : Sends Slack reminder to employees
+- [POST] http://hostname/login/auth/ : Checks login credentials and generates auth token
 
 ### Enviroment variables for Slack
 
-In order to send a Slack reminder you need to create an .env file with the SLACK_TOKEN and SLACK_CHANNEL variables. The SLACK_TOKEN must be generated in the Slack app as shown in https://api.slack.com/authentication/basics#installing
-SLACK_CHANNEL is the name of the channel in wich the reminder will be sent. Example:
+In order to send a Slack reminder you need to create an .env file in the cornershop-backend-test folder with the SLACK_TOKEN and SLACK_CHANNEL variables. The SLACK_TOKEN must be generated in the Slack app as shown in https://api.slack.com/authentication/basics#installing
+and the SLACK_CHANNEL is the name of the channel in which the reminder will be sent. Example:
 
 ```
 SLACK_TOKEN="xoxb-XXXXXXXXXXXXXXXXX-XXXXXXXXXXXXXXXXX-XXXXXXXXXXXXXXXXX"
 SLACK_CHANNEL=chilean-employees
 ```
 
+Remember that you have to add the Slack app to the channel.
 
 ### About building local environment with Linux systems
 
