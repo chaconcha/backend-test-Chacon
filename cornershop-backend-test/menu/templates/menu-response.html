@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cornershop Menu</title>
+
+    <!-- This is a development version of Vue.js! -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      axios.defaults.xsrfCookieName = 'csrftoken';
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    </script>
+
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- Basic usage -->
+
+    <div id="app_menu">
+      <h1>Menu: [[ menu.name ]] - [[ menu.date ]]</h1>
+      <div v-show="show">
+        <table>
+          <tr>
+            <th></th>
+            <th>Options</th>
+          </tr>
+          <tr v-for="(option,index) in menu.options">
+            <td><input type="radio" :value="option.id" v-model="response.option" /></td>
+            <td>[[ option.text ]]</td>
+          </tr>
+        </table>
+        <input v-model="response.employee" placeholder="Name" />
+        <input v-model="response.customization" placeholder="e.g. no tomatoes in the salad" />
+        <button @click="submit">Send response</button>
+      </div>
+      <p :style="'color: ' + messageColor">[[ message ]]</p>
+    </div>
+
+    <script>
+      new Vue({
+        delimiters: ["[[", "]]"],
+        el: "#app_menu",
+        data: {
+          message: "",
+          messageColor: "green",
+          id: "{{ pk }}",
+          menu: {},
+          response: {},
+          show: true
+        },
+        mounted () {
+          var url = '/menu-api/' + this.id + "/form/"
+          axios
+            .get(url)
+            .then(response => (this.menu = response.data))
+            .catch(error => {
+              this.messageColor = "red"
+              this.message = error.response.data
+            })
+        },
+        methods: {
+          submit() {
+            var url = '/menu-api/' + this.id + "/respond/"
+            var responseData = this.response
+            axios
+              .post(url, responseData)
+              .then(response => {
+                this.messageColor = "green"
+                this.message="Your response has been saved!"
+                this.show=false
+              })
+              .catch(error => {
+                this.messageColor = "red"
+                this.message = error.response.data
+              })
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

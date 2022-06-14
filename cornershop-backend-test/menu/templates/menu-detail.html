@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cornershop Menu Detail</title>
+
+    <!-- This is a development version of Vue.js! -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      axios.defaults.xsrfCookieName = 'csrftoken';
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    </script>
+
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- Basic usage -->
+
+    <div id="app_menu">
+      <!--<a href="">Go back to Menu list</a>-->
+      <h1>Menu</h1>
+      <label for="name">Name</label>
+      <input id="name" v-model="menu.name" placeholder="Menu name" />
+      <label for="date">Date</label>
+      <input id="date" type="date" v-model="menu.date" placeholder="YYYY-MM-DD" />
+      <label>Options</label>
+      <div v-for="(option,index) in menu.options">
+        <input v-model="option.text" placeholder="Menu option" />
+        <button @click="deleteOption(index)">Delete option</button>
+      </div>
+      <button @click="addOption">Add option</button>
+      <button @click="updateMenu">Update Menu</button>
+      <button @click="sendReminder">Send Slack reminder</button>
+      <button @click="deleteMenu">Delete Menu</button>
+      <p :style="'color: ' + messageColor">[[ message ]]</p>
+      <h1>Responses</h1>
+      <table>
+        <tr>
+          <th>Employee</th>
+          <th>Option</th>
+          <th>Comment</th>
+        </tr>
+        <tr v-for="response in menu.responses">
+          <td>[[ response.employee ]]</td>
+          <td>[[ response.option.text ]]</td>
+          <td>[[ response.customization ]]</td>
+        </tr>
+      </table>
+    </div>
+
+    <script>
+      new Vue({
+        delimiters: ["[[", "]]"],
+        el: "#app_menu",
+        data: {
+          message: "",
+          messageColor: "green",
+          id: "{{ pk }}",
+          menu: {}
+        },
+        mounted () {
+          var url = '/menu-api/' + this.id + "/"
+          axios
+            .get(url, { headers: { 'Authorization': 'Token ' + localStorage.getItem('token')} })
+            .then(response => (this.menu = response.data))
+            .catch(error => window.location.href = 'http://' + window.location.host + '/login/')
+        },
+        methods: {
+          addOption() {
+            var newOption = { text: "" }
+            this.menu.options.push(newOption)
+          },
+          deleteOption(index) {
+            this.menu.options.splice(index, 1)
+          },
+          updateMenu() {
+            var url = '/menu-api/' + this.id + "/"
+            var menuData = this.menu
+            axios
+              .put(url, menuData, { headers: { 'Authorization': 'Token ' + localStorage.getItem('token')} })
+              .then(response => {
+                this.messageColor="green"
+                this.message="Menu has been successfully updated!"
+              })
+              .catch(error => {
+                this.messageColor="red"
+                this.message=error.response.data
+              })
+          },
+          deleteMenu() {
+            var url = '/menu-api/' + this.id + "/"
+            axios
+              .delete(url, { headers: { 'Authorization': 'Token ' + localStorage.getItem('token')} })
+              .then(response => {
+                this.messageColor="green"
+                this.message="Menu deleted successfully!"
+                window.location.href = 'http://' + window.location.host + '/menu/'
+              })
+              .catch(error => {
+                this.messageColor="red"
+                this.message=error.response.data
+              })
+          },
+          sendReminder() {
+            var url = '/menu-api/' + this.id + "/reminder/"
+            axios
+              .post(url, {}, { headers: { 'Authorization': 'Token ' + localStorage.getItem('token')} })
+              .then(response => {
+                this.messageColor="green"
+                this.message="Reminder has been sent successfully!"
+              })
+              .catch(error => {
+                this.messageColor="red"
+                this.message=error.response.data
+              })
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cornershop Menu List</title>
+
+    <!-- This is a development version of Vue.js! -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      axios.defaults.xsrfCookieName = 'csrftoken';
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    </script>
+
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- Basic usage -->
+
+    <div id="app_menu">
+      <h1>Menus</h1>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+        <tr v-for="menu in menuList">
+          <td>[[ menu.name ]]</td>
+          <td>[[ menu.date ]]</td>
+          <td><a :href="menu.id + '/detail/'">See Menu</a></td>
+        </tr>
+      </table>
+      <h1>New Menu</h1>
+      <label for="name">Name</label>
+      <input id="name" v-model="newMenu.name" placeholder="Menu name" />
+      <label for="date">Date</label>
+      <input id="date" type="date" v-model="newMenu.date" placeholder="YYYY-MM-DD" />
+      <label>Options</label>
+      <div v-for="(option, index) in newMenu.options">
+        <input v-model="option.text" placeholder="Menu option" />
+        <button @click="deleteOption(index)">Delete option</button>
+      </div>
+      <button @click="addOption">Add option</button>
+      <button @click="submit">Create</button>
+      <p :style="'color: ' + messageColor">[[ message ]]</p>
+    </div>
+
+    <script>
+      new Vue({
+        delimiters: ["[[", "]]"],
+        el: "#app_menu",
+        data: {
+          message: "",
+          messageColor: "green",
+          menuList: [],
+          newMenu: {
+            options: [
+            {
+              text: ""
+            }
+            ]
+          }
+        },
+        mounted () {
+          var url = '/menu-api/'
+          axios
+            .get(url, { headers: { 'Authorization': 'Token ' + localStorage.getItem('token') } })
+            .then(response => (this.menuList = response.data))
+            .catch(error => window.location.href = 'http://' + window.location.host + '/login/')
+        },
+        methods: {
+          addOption() {
+            var newOption = { text: "" }
+            this.newMenu.options.push(newOption)
+          },
+          deleteOption(index) {
+            this.newMenu.options.splice(index, 1)
+          },
+          submit() {
+            var url = '/menu-api/'
+            var menuData = this.newMenu
+            axios
+              .post(url, menuData, { headers: { 'Authorization': 'Token ' + localStorage.getItem('token')} })
+              .then(response => {
+                this.messageColor="green"
+                this.message="Menu created successfully!"
+                window.location.href = 'http://' + window.location.host + '/menu/' + response.data.id + '/detail/'
+              })
+              .catch(error => {
+                this.messageColor="red"
+                this.message=error.response.data
+              })
+          },
+        }
+      })
+    </script>
+  </body>
+</html>
