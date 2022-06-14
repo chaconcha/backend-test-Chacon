@@ -238,3 +238,10 @@ LOGGING = {
         },
     },
 }
+
+# Auth Token for the Slack app
+SLACK_TOKEN = getenv("SLACK_TOKEN", default="")
+# Chat where reminders will be sent
+SLACK_CHANNEL = getenv("SLACK_CHANNEL", default="")
+# Hostname used to create menu's URL
+HOSTNAME = getenv("HOSTNAME", default="localhost")
