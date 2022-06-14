@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cornershop Login</title>
+
+    <!-- This is a development version of Vue.js! -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      axios.defaults.xsrfCookieName = 'csrftoken';
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    </script>
+
+    <!-- import stylesheet -->
+    <!-- <link rel="stylesheet" href="styles.css" />-->
+
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- Basic usage -->
+
+    <div id="app_menu">
+      <h1>Login</h1>
+      <label for="name">Username</label>
+      <input id="name" v-model="userData.username" />
+      <label for="date">Password</label>
+      <input id="date" v-model="userData.password"  />
+      <button @click="submit">Login</button>
+      [[ message ]]
+    </div>
+
+    <script>
+      new Vue({
+        delimiters: ["[[", "]]"],
+        el: "#app_menu",
+        data: {
+          message: "",
+          userData: {},
+        },
+        methods: {
+          submit() {
+            var url = '/login/auth/'
+            axios
+              .post(url, this.userData)
+              .then(response => {
+                localStorage.setItem('token', response.data.token)
+                window.location.href = 'http://' + window.location.host + '/menu/'})
+              .catch(error => this.message=error.payload)
+          },
+        }
+      })
+    </script>
+  </body>
+</html>
